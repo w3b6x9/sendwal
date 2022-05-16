@@ -1,0 +1,45 @@
+# fly.toml file generated for sendwal on 2022-05-15T21:09:46-07:00
+
+app = "sendwal"
+
+kill_signal = "SIGTERM"
+kill_timeout = 5
+processes = []
+
+[deploy]
+  strategy = "rolling"
+
+[env]
+  PHX_HOST = "sendwal.fly.dev"
+  PORT = "4000"
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  http_checks = []
+  internal_port = 4000
+  processes = ["app"]
+  protocol = "tcp"
+  script_checks = []
+
+  [services.concurrency]
+    hard_limit = 100000
+    soft_limit = 100000
+    type = "connections"
+
+  [[services.ports]]
+    force_https = true
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls", "http"]
+    port = 443
+
+  [[services.tcp_checks]]
+    grace_period = "30s"
+    interval = "15s"
+    restart_limit = 6
+    timeout = "2s"
